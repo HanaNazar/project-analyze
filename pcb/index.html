@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Project Analyzer</title>
+    <style>
+        /* ============================================
+           RESET & BASIC STYLES
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* ============================================
+           CONTAINER & LAYOUT
+           ============================================ */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* ============================================
+           HEADER & HERO SECTION
+           ============================================ */
+        .header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            color: white;
+            animation: fadeInDown 0.8s ease-in-out;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            font-weight: 300;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        /* ============================================
+           INPUT SECTION
+           ============================================ */
+        .input-section {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            margin-bottom: 40px;
+            animation: fadeInUp 0.8s ease-in-out;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .input-group label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group input {
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background-color: #f8f9ff;
+        }
+
+        .input-group input::placeholder {
+            color: #999;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        /* ============================================
+           RESULTS SECTION
+           ============================================ */
+        .results-section {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .project-title {
+            text-align: center;
+            color: white;
+            font-size: 1.8rem;
+            margin-bottom: 40px;
+            animation: slideInUp 0.6s ease-in-out;
+        }
+
+        /* ============================================
+           CARD STYLES
+           ============================================ */
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            animation: slideInUp 0.6s ease-in-out;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h2 {
+            color: #667eea;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #764ba2;
+            padding-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-icon {
+            font-size: 1.5rem;
+        }
+
+        .card h3 {
+            color: #764ba2;
+            font-size: 1.1rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .card h3:first-of-type {
+            margin-top: 0;
+        }
+
+        .card p {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .card ul,
+        .card ol {
+            margin-left: 20px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .card li {
+            margin-bottom: 10px;
+        }
+
+        .card strong {
+            color: #333;
+        }
+
+        /* ============================================
+           COMPONENT TABLE
+           ============================================ */
+        .component-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            overflow-x: auto;
+        }
+
+        .component-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .component-table th,
+        .component-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .component-table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .component-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ============================================
+           COST ESTIMATE
+           ============================================ */
+        .cost-box {
+            background: linear-gradient(135deg, #f5f7ff 0%, #f0e6ff 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .cost-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .cost-item:last-child {
+            border-bottom: none;
+        }
+
+        .cost-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .cost-value {
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        /* ============================================
+           BLOCK DIAGRAM
+           ============================================ */
+        .diagram {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            color: #555;
+            font-size: 0.9rem;
+            line-height: 1.8;
+            overflow-x: auto;
+        }
+
+        /* ============================================
+           SCROLL TO TOP BUTTON
+           ============================================ */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .scroll-to-top.show {
+            display: flex;
+        }
+
+        .scroll-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
+        }
+
+        /* ============================================
+           ANIMATIONS
+           ============================================ */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .header p {
+                font-size: 0.95rem;
+            }
+
+            .input-section {
+                padding: 25px;
+            }
+
+            .button-container {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .card h2 {
+                font-size: 1.2rem;
+            }
+
+            .card h3 {
+                font-size: 1rem;
+            }
+
+            .component-table {
+                font-size: 0.9rem;
+            }
+
+            .component-table th,
+            .component-table td {
+                padding: 8px 10px;
+            }
+
+            .scroll-to-top {
+                width: 45px;
+                height: 45px;
+                bottom: 20px;
+                right: 20px;
+                font-size: 1.2rem;
+            }
+
+            .project-title {
+                font-size: 1.3rem;
+                margin-bottom: 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 40px 15px 25px;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .header p {
+                font-size: 0.9rem;
+            }
+
+            .input-section {
+                padding: 20px;
+                margin-bottom: 25px;
+            }
+
+            .input-group {
+                gap: 15px;
+            }
+
+            .card {
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+
+            .card h2 {
+                font-size: 1.1rem;
+            }
+
+            .diagram {
+                font-size: 0.8rem;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <div class="container">
+        <div class="header">
+            <h1>🔬 Smart Project Analyzer</h1>
+            <p>Generate Complete Engineering Project Analysis</p>
+        </div>
+
+        <!-- Input Section -->
+        <div class="input-section">
+            <div class="input-group">
+                <label for="projectName">Enter Your Project Name</label>
+                <input 
+                    type="text" 
+                    id="projectName" 
+                    placeholder="Example: Smart Dustbin, IoT Weather Station, Home Automation System..."
+                    autocomplete="off"
+                >
+                <div class="button-container">
+                    <button class="btn btn-primary" id="generateBtn">Generate Complete Analysis</button>
+                    <button class="btn btn-secondary" id="clearBtn">Clear All</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <div class="project-title" id="projectTitle"></div>
+
+            <!-- System Understanding -->
+            <div class="card">
+                <h2><span class="card-icon">📋</span>System Understanding</h2>
+                <h3>Purpose</h3>
+                <p id="purpose"></p>
+                <h3>Working Principle</h3>
+                <p id="principle"></p>
+                <h3>Applications</h3>
+                <ul id="applications"></ul>
+            </div>
+
+            <!-- Components & Cost -->
+            <div class="card">
+                <h2><span class="card-icon">⚙️</span>Components & Cost Analysis</h2>
+                <h3>Component List and Specifications</h3>
+                <table class="component-table">
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Quantity</th>
+                            <th>Specifications</th>
+                            <th>Unit Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody id="componentTable">
+                    </tbody>
+                </table>
+                <h3>Cost Estimation</h3>
+                <div class="cost-box" id="costBox"></div>
+            </div>
+
+            <!-- System Architecture -->
+            <div class="card">
+                <h2><span class="card-icon">🏗️</span>System Architecture</h2>
+                <h3>Functional Blocks</h3>
+                <p id="functionalBlocks"></p>
+                <h3>Block Diagram</h3>
+                <div class="diagram" id="blockDiagram"></div>
+            </div>
+
+            <!-- Circuit Diagram -->
+            <div class="card">
+                <h2><span class="card-icon">⚡</span>Circuit Diagram & Pin Connections</h2>
+                <h3>Pin Connections</h3>
+                <table class="component-table">
+                    <thead>
+                        <tr>
+                            <th>Pin/Wire</th>
+                            <th>Connection</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pinConnections">
+                    </tbody>
+                </table>
+                <h3>Wiring Logic</h3>
+                <p id="wiringLogic"></p>
+            </div>
+
+            <!-- Design Risk & Fault Analysis -->
+            <div class="card">
+                <h2><span class="card-icon">⚠️</span>Design Risk & Fault Analysis</h2>
+                <h3>Failure Points</h3>
+                <ul id="failurePoints"></ul>
+                <h3>Safety Risks & Mitigation</h3>
+                <ul id="safetyRisks"></ul>
+            </div>
+
+            <!-- Industrial Cost Estimation -->
+            <div class="card">
+                <h2><span class="card-icon">💰</span>Industrial Cost Estimation</h2>
+                <h3>Cost Breakdown</h3>
+                <div class="cost-box" id="industrialCost"></div>
+            </div>
+
+            <!-- Implementation Procedure -->
+            <div class="card">
+                <h2><span class="card-icon">🛠️</span>Implementation Procedure</h2>
+                <h3>Step-by-Step Build Guide</h3>
+                <ol id="implementation"></ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-to-top" id="scrollToTopBtn">↑</button>
+
+    <script>
+        // ============================================
+        // PROJECT DATA TEMPLATES
+        // ============================================
+        const projectTemplates = {
+            'smart dustbin': {
+                purpose: 'An intelligent waste management system that automatically detects waste levels and segregates different types of waste, reducing manual intervention and promoting environmental sustainability.',
+                principle: 'The system uses capacitive sensors to detect waste level inside the bin. When a specific threshold is reached, an alert is sent to the user via a mobile app. The lid opens/closes automatically using servo motor control. Waste segregation happens through multiple compartments with different sensor triggers.',
+                applications: [
+                    'Smart cities and municipalities',
+                    'Commercial establishments (malls, offices)',
+                    'Residential societies',
+                    'Industrial facilities',
+                    'Educational institutions'
+                ],
+                components: [
+                    { name: 'Arduino Uno', qty: 1, spec: 'ATmega328P Microcontroller', cost: 450 },
+                    { name: 'Capacitive Sensor Module', qty: 3, spec: '0-35mm Detection Range', cost: 150 },
+                    { name: 'Servo Motor', qty: 2, spec: 'SG90 Digital Servo', cost: 200 },
+                    { name: 'Ultrasonic Sensor', qty: 2, spec: '40kHz Frequency, 2-450cm', cost: 300 },
+                    { name: 'WiFi Module (ESP8266)', qty: 1, spec: '802.11b/g/n', cost: 400 },
+                    { name: 'Power Supply Module', qty: 1, spec: '12V 2A', cost: 350 },
+                    { name: 'Relay Module', qty: 2, spec: '8-Channel 5V', cost: 200 },
+                    { name: 'Jumper Wires & Connectors', qty: 1, spec: 'Mixed Pack', cost: 150 },
+                    { name: 'PCB & Soldering Material', qty: 1, spec: 'Standard Materials', cost: 200 },
+                    { name: 'Plastic Housing & Enclosure', qty: 1, spec: 'Custom Made', cost: 500 }
+                ],
+                functionalBlocks: 'The system comprises five main functional blocks: (1) Sensor Module - detects waste levels and types using capacitive and ultrasonic sensing, (2) Control Module - Arduino processes sensor data and makes decisions, (3) Actuation Module - servo motors open/close lids based on commands, (4) Communication Module - WiFi module sends data to cloud/mobile app, (5) Power Management - distributes power to all components.',
+                blockDiagram: `
+                ┌─────────────────┐
+                │  Sensor Module  │
+                │ (Capacitive &   │
+                │  Ultrasonic)    │
+                └────────┬────────┘
+                         │
+                ┌────────▼────────┐
+                │  Arduino Uno    │
+                │  (Control)      │
+                └────────┬────────┘
+                         │
+        ┌────────────────┼────────────────┐
+        │                │                │
+        │                │                │
+    ┌───▼──┐       ┌────▼━━┐       ┌────▼──┐
+    │Servo │       │Relay  │       │ESP8266│
+    │Motor │       │Module │       │WiFi   │
+    └──────┘       └───────┘       └───────┘
+                `,
+                pinConnections: [
+                    { pin: 'Pin 2-13', connection: 'Sensor Inputs', purpose: 'Capacitive & Ultrasonic Data' },
+                    { pin: 'Pin 3-5', connection: 'PWM Servo Control', purpose: 'Servo Motor Drive' },
+                    { pin: 'Pin 8-10', connection: 'Relay Control', purpose: 'Motor/Pump Switching' },
+                    { pin: 'RX/TX (0-1)', connection: 'UART ESP8266', purpose: 'WiFi Module Communication' },
+                    { pin: 'VCC/GND', connection: 'Power Distribution', purpose: '+5V & Ground Rails' }
+                ],
+                wiringLogic: 'All sensors connect to analog/digital input pins with pull-up resistors. Servo motors use PWM pins for speed control. Relay modules are controlled via digital GPIO pins. WiFi module communicates via UART (Serial). Power is distributed through a common ground and VCC rail with capacitors for noise filtering.',
+                failurePoints: [
+                    'Sensor fouling or blockage due to waste particles',
+                    'Motor jam due to overloading or debris',
+                    'WiFi connectivity loss in network dead zones',
+                    'Power supply failure leading to system shutdown',
+                    'Corrosion of PCB due to moisture and humidity'
+                ],
+                safetyRisks: [
+                    'Pinching hazard from moving servo motors - mitigation: safety guards and speed limiters',
+                    'Electrical shock risk - mitigation: proper insulation and fuse protection',
+                    'Sharp edges in metal components - mitigation: edge bending/rounding during assembly',
+                    'Chemical hazard from waste materials - mitigation: sealed compartments and gloves for maintenance',
+                    'Overheating - mitigation: thermal management and ventilation holes'
+                ],
+                implementation: [
+                    'Design and fabricate the mechanical structure with appropriate bin dimensions',
+                    'Assemble all electronic components on PCB following schematic',
+                    'Install capacitive sensors at desired waste level points',
+                    'Mount servo motors for lid mechanism with proper gearing',
+                    'Connect all wires according to pin configuration table',
+                    'Upload Arduino code with sensor calibration routines',
+                    'Test individual components: sensors, motors, communication',
+                    'Integrate all modules and perform system-level testing',
+                    'Configure WiFi connectivity and cloud integration',
+                    'Perform endurance testing for 100+ cycles',
+                    'Deploy and monitor performance in real-world conditions'
+                ]
+            },
+            'iot weather station': {
+                purpose: 'A comprehensive weather monitoring system that collects real-time atmospheric data including temperature, humidity, pressure, rainfall, and wind speed, providing accurate weather predictions and environmental insights.',
+                principle: 'Multiple sensors collect environmental data and transmit it to a central processing unit. Temperature and humidity are measured using DHT sensors, atmospheric pressure using BMP280, rainfall using tipping bucket gauge, and wind speed using anemometer. Data is processed, stored, and displayed on web/mobile dashboard.',
+                applications: [
+                    'Agricultural monitoring and crop management',
+                    'Aviation weather reporting',
+                    'Climate research institutions',
+                    'Urban pollution monitoring',
+                    'Outdoor event planning',
+                    'Solar panel efficiency optimization'
+                ],
+                components: [
+                    { name: 'Arduino MKR WiFi 1010', qty: 1, spec: 'SAMD21 Processor, 32KB RAM', cost: 2850 },
+                    { name: 'DHT22 Temperature/Humidity', qty: 1, spec: '-40°C to +80°C, ±2%', cost: 300 },
+                    { name: 'BMP280 Pressure Sensor', qty: 1, spec: '300-1100 hPa, I2C/SPI', cost: 450 },
+                    { name: 'Rain Gauge', qty: 1, spec: 'Tipping Bucket Type', cost: 1200 },
+                    { name: 'Anemometer', qty: 1, spec: '3-Cup Type, 0-45 m/s', cost: 1500 },
+                    { name: 'Wind Vane', qty: 1, spec: '0-360° Potentiometric', cost: 800 },
+                    { name: 'Solar Panel', qty: 1, spec: '5W 12V Mono', cost: 1500 },
+                    { name: 'Battery Pack', qty: 1, spec: '12V 7Ah Lithium', cost: 3000 },
+                    { name: 'Charge Controller', qty: 1, spec: 'MPPT Type, 12V 10A', cost: 2500 },
+                    { name: 'Enclosure & Mounting', qty: 1, spec: 'Radiation Shield', cost: 2000 }
+                ],
+                functionalBlocks: 'The system has six functional blocks: (1) Sensor Array - DHT22, BMP280, rain gauge, anemometer, and wind vane for environmental sensing, (2) Processing Unit - Arduino MKR for data collection and computation, (3) Solar Power System - panel and battery for continuous operation, (4) Storage Module - data logging to SD card for historical analysis, (5) Communication Module - WiFi for cloud transmission, (6) User Interface - web dashboard and mobile app.',
+                blockDiagram: `
+                ┌──────────────────┐
+                │  Sensor Array    │
+                │ (DHT,BMP,Wind)   │
+                └────────┬─────────┘
+                         │
+                ┌────────▼──────────┐
+                │  Arduino MKR      │
+                │  WiFi 1010        │
+                └────────┬──────────┘
+                         │
+        ┌────────────────┼────────────────┬─────────────┐
+        │                │                │             │
+    ┌───▼──┐       ┌────▼─────┐    ┌────▼───┐   ┌────▼──┐
+    │ Cloud │       │ SD Card  │    │ Web    │   │Mobile │
+    │Server │       │ Storage  │    │Board   │   │App    │
+    └───────┘       └──────────┘    └────────┘   └───────┘
+                `,
+                pinConnections: [
+                    { pin: 'Pin A0', connection: 'Wind Vane Analog', purpose: 'Direction Measurement' },
+                    { pin: 'Pin 6', connection: 'Anemometer Signal', purpose: 'Speed Measurement' },
+                    { pin: 'Pin 7', connection: 'Rain Gauge Signal', purpose: 'Rainfall Detection' },
+                    { pin: 'I2C (SDA/SCL)', connection: 'DHT22, BMP280', purpose: 'Sensor Communication' },
+                    { pin: 'WiFi Module', connection: 'MKR WiFi Ports', purpose: 'Internet Connectivity' }
+                ],
+                wiringLogic: 'Analog sensors connect to ADC pins with appropriate voltage dividers. Digital signals from anemometer and rain gauge connect to interrupt pins for counting pulses. I2C sensors share SDA and SCL lines with pull-up resistors. Solar panel connects through charge controller to battery, and microcontroller draws power from battery with voltage regulation.',
+                failurePoints: [
+                    'Sensor icing in winter conditions',
+                    'Corrosion of metal wind vane due to rain',
+                    'Battery degradation over extended use',
+                    'WiFi signal loss in remote locations',
+                    'Anemometer bearing wear after prolonged operation'
+                ],
+                safetyRisks: [
+                    'High winds can tip over mounting pole - mitigation: robust base and guy-wires',
+                    'Lightning strike hazard - mitigation: lightning arrestor and grounding',
+                    'Electrical shock from solar/battery system - mitigation: proper insulation and warning labels',
+                    'Falling components hazard - mitigation: secure fastening and regular inspection',
+                    'Rotating parts hazard - mitigation: protective screens around anemometer'
+                ],
+                implementation: [
+                    'Select appropriate mounting location with clear sky view and no obstructions',
+                    'Assemble the mast structure with proper tensioning and guy-wire installation',
+                    'Mount temperature/humidity sensor in radiation shield',
+                    'Install barometric pressure sensor in weatherproof enclosure',
+                    'Calibrate wind vane to true north using compass',
+                    'Mount anemometer and rain gauge at standard meteorological height',
+                    'Install solar panel at optimal angle for location',
+                    'Connect battery, charge controller, and power distribution',
+                    'Program Arduino with sensor-specific initialization routines',
+                    'Perform sensor calibration and verification against standards',
+                    'Configure WiFi and cloud connectivity parameters',
+                    'Deploy and continuously monitor data quality'
+                ]
+            },
+            'home automation system': {
+                purpose: 'An integrated smart home system that controls lighting, HVAC, security, and appliances through a centralized interface, providing energy efficiency, convenience, and enhanced home security.',
+                principle: 'A central hub communicates with smart devices throughout the home via wireless protocols (WiFi, Zigbee). Sensors detect occupancy, light levels, and temperature. Actuators control lights and appliances. The system learns user patterns and automates routines. Mobile app allows remote control.',
+                applications: [
+                    'Residential homes and apartments',
+                    'Commercial office buildings',
+                    'Hotels and hospitality',
+                    'Healthcare facilities',
+                    'Museums and galleries',
+                    'Green building certifications'
+                ],
+                components: [
+                    { name: 'Central Hub (Raspberry Pi 4)', qty: 1, spec: '4GB RAM, WiFi+BT', cost: 6000 },
+                    { name: 'Smart Light Bulbs', qty: 6, spec: '16 Million Colors, 800 Lumens', cost: 800 },
+                    { name: 'Motion Sensor', qty: 4, spec: 'PIR, 120° Coverage, 6m Range', cost: 400 },
+                    { name: 'Temperature Sensor', qty: 3, spec: 'DHT11, I2C', cost: 250 },
+                    { name: 'Smart Switch Module', qty: 8, spec: '2-Channel 20A Relay', cost: 1200 },
+                    { name: 'Door/Window Sensor', qty: 5, spec: 'Magnetic Reed Switch', cost: 500 },
+                    { name: 'Smart Thermostat', qty: 1, spec: 'Learning Capability', cost: 3000 },
+                    { name: 'Security Camera', qty: 2, spec: '1080p, Night Vision', cost: 3000 },
+                    { name: 'Smart Plug', qty: 4, spec: '10A, Energy Monitoring', cost: 600 },
+                    { name: 'WiFi Router', qty: 1, spec: 'Mesh Capable, Dual Band', cost: 4000 }
+                ],
+                functionalBlocks: 'The system comprises seven functional blocks: (1) Central Processing Unit - Raspberry Pi with Home Assistant software, (2) Sensor Network - occupancy, temperature, door/window sensors scattered throughout home, (3) Lighting Control - smart bulbs and switch modules, (4) Climate Control - thermostat and HVAC integration, (5) Security - cameras and door sensors with alerts, (6) Appliance Control - smart plugs for energy management, (7) Communication - WiFi mesh network with cloud backup.',
+                blockDiagram: `
+                      ┌─────────────────┐
+                      │   Sensor Net    │
+                      │  (Motion, Temp) │
+                      └────────┬────────┘
+                               │
+                      ┌────────▼────────┐
+                      │ Raspberry Pi    │
+                      │  (Home Hub)     │
+                      └────────┬────────┘
+                               │
+        ┌──────────────────────┼──────────────────────┐
+        │                      │                      │
+    ┌───▼──┐            ┌─────▼─────┐         ┌────▼──┐
+    │Smart │            │ Thermostat│         │Camera │
+    │Lights│            │ /HVAC     │         │/Sec   │
+    └──────┘            └───────────┘         └───────┘
+                `,
+                pinConnections: [
+                    { pin: 'GPIO 17-27', connection: 'Relay Control Pins', purpose: 'Device Switching' },
+                    { pin: 'GPIO 4,17,27', connection: 'Motion Sensors', purpose: 'Occupancy Detection' },
+                    { pin: 'I2C (SDA/SCL)', connection: 'Temperature Sensors', purpose: 'Climate Sensing' },
+                    { pin: 'GPIO 5-8', connection: 'Door Sensors', purpose: 'Security Monitoring' },
+                    { pin: 'WiFi/Ethernet', connection: 'Network Interface', purpose: 'Central Communication' }
+                ],
+                wiringLogic: 'GPIO pins configured for digital I/O to relay modules for switch control. I2C bus used for temperature sensor communication with pull-up resistors. Motion and door sensors connect to GPIO with debouncing capacitors. All devices communicate through WiFi mesh network. Power distribution through 12V supply to relays and 5V to sensors.',
+                failurePoints: [
+                    'WiFi signal dead zones in large homes',
+                    'Hub failure causing complete system loss',
+                    'Smart device incompatibility or firmware issues',
+                    'Battery failure in wireless sensor nodes',
+                    'Network congestion with too many devices'
+                ],
+                safetyRisks: [
+                    'Electrical fire risk from malfunctioning relays - mitigation: fuses and thermal cutoffs',
+                    'Cold start risk if heating fails - mitigation: manual override and emergency heat',
+                    'Security breach through hacking - mitigation: encryption and regular updates',
+                    'Entrapment risk from automated locks - mitigation: manual unlock capability',
+                    'Flooding from automated water systems - mitigation: water sensors and redundancy'
+                ],
+                implementation: [
+                    'Plans house layout and identify control zones',
+                    'Install central hub (Raspberry Pi) in accessible location',
+                    'Configure home network with WiFi mesh system',
+                    'Install motion sensors in high-traffic areas',
+                    'Place temperature sensors in each room',
+                    'Mount door/window sensors on exterior and secure interior doors',
+                    'Install smart bulbs and switch modules for all lights',
+                    'Connect thermostat to HVAC system',
+                    'Set up security cameras at entry points',
+                    'Install smart plugs on controllable appliances',
+                    'Configure Home Assistant software with automation rules',
+                    'Test all devices and establish reliable automations'
+                ]
+            }
+        };
+
+        // ============================================
+        // UTILITY FUNCTIONS
+        // ============================================
+
+        /**
+         * Generate detailed analysis based on project name
+         * Falls back to template if exact match not found
+         */
+        function getProjectAnalysis(projectName) {
+            const normalizedName = projectName.toLowerCase().trim();
+            
+            // Check if exact match exists
+            if (projectTemplates[normalizedName]) {
+                return projectTemplates[normalizedName];
+            }
+
+            // Generate generic analysis for custom projects
+            return generateGenericAnalysis(projectName);
+        }
+
+        /**
+         * Generate generic analysis for custom project names
+         */
+        function generateGenericAnalysis(projectName) {
+            return {
+                purpose: `A comprehensive ${projectName} system designed to optimize efficiency, improve user experience, and integrate emerging technologies for modern automation and monitoring.`,
+                principle: `The system operates on sensor-based data collection and intelligent processing. Sensors gather environmental and operational parameters, which are processed by a central microcontroller. Based on the processed data, the system triggers appropriate responses through actuators and communication modules. Real-time monitoring and feedback loops ensure optimal system performance.`,
+                applications: [
+                    'Industrial automation and process control',
+                    'Smart environment monitoring',
+                    'Energy management and optimization',
+                    'Data collection and analysis',
+                    'Predictive maintenance systems',
+                    'Remote monitoring and control'
+                ],
+                components: [
+                    { name: 'Microcontroller (Arduino/ESP32)', qty: 1, spec: 'General Purpose MCU', cost: 600 },
+                    { name: 'Power Supply Module', qty: 1, spec: '12V 2A', cost: 350 },
+                    { name: 'Sensor Suite', qty: 1, spec: 'Various analog/digital sensors', cost: 2000 },
+                    { name: 'Communication Module', qty: 1, spec: 'WiFi/Bluetooth', cost: 500 },
+                    { name: 'Relay/Switch Module', qty: 1, spec: 'Multi-channel switching', cost: 400 },
+                    { name: 'Data Logging Module', qty: 1, spec: 'SD Card Interface', cost: 300 },
+                    { name: 'Display/Interface', qty: 1, spec: 'LCD/OLED Screen', cost: 500 },
+                    { name: 'Enclosure & Cabling', qty: 1, spec: 'Professional housing', cost: 1000 },
+                    { name: 'PCB & Soldering Materials', qty: 1, spec: 'Standard Components', cost: 600 },
+                    { name: 'Additional Accessories', qty: 1, spec: 'Miscellaneous Parts', cost: 750 }
+                ],
+                functionalBlocks: 'The system consists of five primary functional blocks: (1) Sensing Module - collects data from various sensors, (2) Processing Module - core microcontroller with intelligent algorithms, (3) Control Module - actuators and relays for system operation, (4) Communication Module - transmits data and receives commands, (5) Power Management - ensures stable and efficient power distribution.',
+                blockDiagram: `
+                ┌─────────────────────┐
+                │   Sensor Module     │
+                │  (Data Collection)  │
+                └──────────┬──────────┘
+                           │
+                ┌──────────▼──────────┐
+                │  Processing Unit    │
+                │   (Microcontroller) │
+                └──────────┬──────────┘
+                   ┌───────┼───────┐
+                   │       │       │
+            ┌──────▼──┐ ┌──▼──┐ ┌─▼──────────┐
+            │Actuators│ │Comm.│ │Data Logging│
+            │/Control │ │Modul│ │            │
+            └─────────┘ └─────┘ └────────────┘
+                `,
+                pinConnections: [
+                    { pin: 'Analog Pins (A0-A7)', connection: 'Analog Sensors', purpose: 'Sensor Data Input' },
+                    { pin: 'Digital Pins (D0-D13)', connection: 'Digital Sensors', purpose: 'Digital I/O Operations' },
+                    { pin: 'PWM Pins (D3,D5,D6,D9)', connection: 'Motor/Actuator Control', purpose: 'Speed/Position Control' },
+                    { pin: 'I2C/SPI Pins', connection: 'Communication Devices', purpose: 'Protocol Communication' },
+                    { pin: 'VCC/GND', connection: 'Power Distribution', purpose: 'Power Supply Rails' }
+                ],
+                wiringLogic: 'Analog sensors connect to analog input pins with protective filtering. Digital sensors use digital I/O pins with appropriate pull-up/pull-down resistors. Communication devices utilize I2C or SPI protocols on dedicated pins. Actuators and motors are driven through relay modules controlled by digital/PWM pins. Complete ground plane ensures low-impedance return paths.',
+                failurePoints: [
+                    'Sensor malfunction due to environmental factors',
+                    'Power supply instability affecting microcontroller',
+                    'Communication link failure or signal loss',
+                    'Actuator mechanical jamming or electrical failure',
+                    'Data corruption in storage or transmission'
+                ],
+                safetyRisks: [
+                    'Electrical hazard from high voltage circuits - mitigation: proper insulation and interlocks',
+                    'Thermal runaway of power components - mitigation: heat sinks and thermal management',
+                    'Mechanical hazards from moving parts - mitigation: guards and emergency stop',
+                    'Chemical exposure during maintenance - mitigation: safety training and PPE',
+                    'Data security vulnerabilities - mitigation: encryption and access control'
+                ],
+                implementation: [
+                    'Define detailed system requirements and specifications',
+                    'Design system architecture and select appropriate components',
+                    'Create detailed circuit schematics with component listings',
+                    'Design and manufacture PCB with proper layout',
+                    'Solder and assemble all components carefully',
+                    'Test individual modules before system integration',
+                    'Develop and upload embedded software with proper error handling',
+                    'Perform comprehensive system testing and calibration',
+                    'Document all procedures and create user guides',
+                    'Deploy system with proper monitoring and maintenance plan',
+                    'Collect operational data for future optimization',
+                    'Iterate improvements based on real-world performance'
+                ]
+            };
+        }
+
+        /**
+         * Format currency values
+         */
+        function formatCurrency(value) {
+            return '₹' + value.toLocaleString('en-IN');
+        }
+
+        /**
+         * Populate component table
+         */
+        function populateComponentTable(components) {
+            const table = document.getElementById('componentTable');
+            table.innerHTML = '';
+            let totalCost = 0;
+
+            components.forEach(comp => {
+                totalCost += comp.cost * comp.qty;
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${comp.name}</td>
+                    <td>${comp.qty}</td>
+                    <td>${comp.spec}</td>
+                    <td>${formatCurrency(comp.cost)}</td>
+                `;
+                table.appendChild(row);
+            });
+
+            // Add total row
+            const totalRow = document.createElement('tr');
+            totalRow.style.fontWeight = 'bold';
+            totalRow.style.background = 'linear-gradient(135deg, #f5f7ff 0%, #f0e6ff 100%)';
+            totalRow.innerHTML = `
+                <td colspan="3">Total Component Cost</td>
+                <td>${formatCurrency(totalCost)}</td>
+            `;
+            table.appendChild(totalRow);
+
+            return totalCost;
+        }
+
+        /**
+         * Populate pin connections table
+         */
+        function populatePinConnections(connections) {
+            const table = document.getElementById('pinConnections');
+            table.innerHTML = '';
+            connections.forEach(conn => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${conn.pin}</strong></td>
+                    <td>${conn.connection}</td>
+                    <td>${conn.purpose}</td>
+                `;
+                table.appendChild(row);
+            });
+        }
+
+        /**
+         * Generate cost estimation box
+         */
+        function generateCostBox(components, label = 'Component Cost Estimation') {
+            let totalCost = 0;
+            components.forEach(comp => {
+                totalCost += comp.cost * comp.qty;
+            });
+
+            const laborCost = Math.round(totalCost * 0.15);
+            const miscCost = Math.round(totalCost * 0.10);
+            const subtotal = totalCost + laborCost + miscCost;
+            const tax = Math.round(subtotal * 0.18);
+            const totalWithTax = subtotal + tax;
+
+            return `
+                <div class="cost-item">
+                    <span class="cost-label">Component Cost</span>
+                    <span class="cost-value">${formatCurrency(totalCost)}</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-label">Labor & Assembly (15%)</span>
+                    <span class="cost-value">${formatCurrency(laborCost)}</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-label">Miscellaneous (10%)</span>
+                    <span class="cost-value">${formatCurrency(miscCost)}</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-label">Subtotal</span>
+                    <span class="cost-value">${formatCurrency(subtotal)}</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-label">GST / Tax (18%)</span>
+                    <span class="cost-value">${formatCurrency(tax)}</span>
+                </div>
+                <div class="cost-item" style="border-top: 2px solid #667eea; padding-top: 15px; margin-top: 15px;">
+                    <span class="cost-label" style="font-size: 1.1rem;">Total Cost</span>
+                    <span class="cost-value" style="font-size: 1.1rem;">${formatCurrency(totalWithTax)}</span>
+                </div>
+            `;
+        }
+
+        /**
+         * Create list items from array
+         */
+        function createListItems(array) {
+            const fragment = document.createDocumentFragment();
+            array.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = item;
+                fragment.appendChild(li);
+            });
+            return fragment;
+        }
+
+        /**
+         * Create ordered list items
+         */
+        function createOrderedListItems(array) {
+            const fragment = document.createDocumentFragment();
+            array.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.textContent = item;
+                fragment.appendChild(li);
+            });
+            return fragment;
+        }
+
+        /**
+         * Populate all sections with project data
+         */
+        function populateAnalysis(analysis, projectName) {
+            // System Understanding
+            document.getElementById('purpose').textContent = analysis.purpose;
+            document.getElementById('principle').textContent = analysis.principle;
+            document.getElementById('applications').innerHTML = '';
+            document.getElementById('applications').appendChild(
+                createListItems(analysis.applications)
+            );
+
+            // Components & Cost
+            const componentCost = populateComponentTable(analysis.components);
+            document.getElementById('costBox').innerHTML = generateCostBox(analysis.components);
+
+            // System Architecture
+            document.getElementById('functionalBlocks').textContent = analysis.functionalBlocks;
+            document.getElementById('blockDiagram').textContent = analysis.blockDiagram;
+
+            // Circuit Diagram
+            populatePinConnections(analysis.pinConnections);
+            document.getElementById('wiringLogic').textContent = analysis.wiringLogic;
+
+            // Design Risk & Fault Analysis
+            document.getElementById('failurePoints').innerHTML = '';
+            document.getElementById('failurePoints').appendChild(
+                createListItems(analysis.failurePoints)
+            );
+            document.getElementById('safetyRisks').innerHTML = '';
+            document.getElementById('safetyRisks').appendChild(
+                createListItems(analysis.safetyRisks)
+            );
+
+            // Industrial Cost Estimation
+            document.getElementById('industrialCost').innerHTML = `
+                <div class="cost-item">
+                    <span class="cost-label">Prototype Cost</span>
+                    <span class="cost-value">${formatCurrency(Math.round(componentCost * 1.33))}</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-label">Unit Production Cost (100 units)</span>
+                    <span class="cost-value">${formatCurrency(Math.round(componentCost * 0.60))}</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-label">Unit Production Cost (1000 units)</span>
+                    <span class="cost-value">${formatCurrency(Math.round(componentCost * 0.45))}</span>
+                </div>
+                <div class="cost-item">
+                    <span class="cost-label">Retail Margin (100%)</span>
+                    <span class="cost-value">${formatCurrency(Math.round(componentCost * 0.90))}</span>
+                </div>
+                <div class="cost-item" style="border-top: 2px solid #764ba2; padding-top: 15px; margin-top: 15px;">
+                    <span class="cost-label" style="font-size: 1.1rem;">Suggested Retail Price</span>
+                    <span class="cost-value" style="font-size: 1.1rem; color: #764ba2;">${formatCurrency(Math.round(componentCost * 1.80))}</span>
+                </div>
+            `;
+
+            // Implementation Procedure
+            document.getElementById('implementation').innerHTML = '';
+            document.getElementById('implementation').appendChild(
+                createOrderedListItems(analysis.implementation)
+            );
+
+            // Show project title
+            document.getElementById('projectTitle').textContent = `📊 Complete Analysis: ${projectName}`;
+        }
+
+        /**
+         * Show/hide scroll to top button
+         */
+        function toggleScrollButton() {
+            const btn = document.getElementById('scrollToTopBtn');
+            if (window.scrollY > 300) {
+                btn.classList.add('show');
+            } else {
+                btn.classList.remove('show');
+            }
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+
+        // Generate button click
+        document.getElementById('generateBtn').addEventListener('click', function() {
+            const projectName = document.getElementById('projectName').value.trim();
+
+            if (!projectName) {
+                alert('⚠️ Please enter a project name!');
+                document.getElementById('projectName').focus();
+                return;
+            }
+
+            // Get analysis data
+            const analysis = getProjectAnalysis(projectName);
+
+            // Populate all sections
+            populateAnalysis(analysis, projectName);
+
+            // Show results section
+            const resultsSection = document.getElementById('resultsSection');
+            resultsSection.classList.add('active');
+
+            // Scroll to results
+            setTimeout(() => {
+                document.querySelector('.project-title').scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }, 100);
+        });
+
+        // Clear button click
+        document.getElementById('clearBtn').addEventListener('click', function() {
+            document.getElementById('projectName').value = '';
+            document.getElementById('resultsSection').classList.remove('active');
+            document.getElementById('projectName').focus();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Scroll to top button
+        document.getElementById('scrollToTopBtn').addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Toggle scroll button visibility
+        window.addEventListener('scroll', toggleScrollButton);
+
+        // Allow Enter key to generate analysis
+        document.getElementById('projectName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('generateBtn').click();
+            }
+        });
+
+        // Focus input on page load
+        window.addEventListener('load', function() {
+            document.getElementById('projectName').focus();
+        });
+    </script>
+</body>
+</html>
