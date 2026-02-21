@@ -13,13 +13,13 @@
 
 
 ### Hosted Project Link
-[mention your project hosted link here]
+[https://projectanalyze.netlify.app/]
 
 ### Project Description
-[2-3 lines about what your project does]
+[This web page help students to know more about their project]
 
 ### The Problem statement
-[What problem are you solving?]
+[]
 
 ### The Solution
 [How are you solving it?]
